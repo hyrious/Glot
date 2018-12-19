@@ -1,0 +1,21 @@
+[
+  { "caption": "Preferences: glot",
+    "command": "edit_settings",
+    "args": {
+      "base_file": "${packages}/glot/glot.sublime-settings",
+      "default": "{\n\t$0\n}\n"
+    }
+  },
+  { "caption": "glot: Open Readme",
+    "command": "open_file",
+    "args": {
+      "file": "${packages}/glot/README.md"
+    }
+  },
+  { "caption": "glot: Open Snippet",
+    "command": "glot_open_snippet"
+  },
+  { "caption": "glot: Run",
+    "command": "glot_run"
+  }
+]
