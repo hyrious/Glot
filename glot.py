@@ -5,8 +5,9 @@ import os
 __version__ = '0.1.0'
 
 def convert(language):
-  if language == 'c++': return 'cpp'
-  if language == 'cs': return 'csharp'
+  if language == 'c++'  : return 'cpp'
+  if language == 'cs'   : return 'csharp'
+  if language == 'shell': return 'bash'
   return language
 
 class Constants(object):
@@ -213,23 +214,31 @@ class GlotNewSnippetCommand(TextCommand):
       active_window().status_message('unsupported language')
       return
     content = view.substr(Region(0, view.size()))
+    name = view.name()
     path = view.file_name()
-    if not path:
-      active_window().status_message(
-        'unsupported temporary file, please save it')
-      return
-    name = os.path.basename(path)
-    @async
-    def on_done(title):
-      active_window().status_message('sending file ...')
-      x = G.create_snippet(language, title, name, content)
-      folder = '{}/{}'.format(C.cache_path, x['id'])
-      if not os.path.exists(folder): os.makedirs(folder)
-      path = '{}/{}'.format(folder, name)
-      with open(path, 'w') as f:
-        f.write(content)
-      active_window().status_message('saved glot snippet {}'.format(title))
-    active_window().show_input_panel('Title', 'Untitled', on_done, nop, nop)
+    is_temporary = path is None
+    def on_done(name):
+      @async
+      def on_done(title):
+        active_window().status_message('sending file ...')
+        x = G.create_snippet(language, title, name, content)
+        folder = '{}/{}'.format(C.cache_path, x['id'])
+        if not os.path.exists(folder): os.makedirs(folder)
+        path = '{}/{}'.format(folder, name)
+        with open(path, 'w') as f:
+          f.write(content)
+        active_window().status_message('saved glot snippet {}'.format(title))
+        if is_temporary:
+          view.run_command("select_all")
+          view.run_command("right_delete")
+        if is_temporary or not view.is_dirty():
+          active_window().run_command('close_file')
+        active_window().open_file(path)
+      active_window().show_input_panel('Title', 'Untitled', on_done, nop, nop)
+    if path:
+      on_done(os.path.basename(path))
+    else:
+      active_window().show_input_panel('FileName', name, on_done, nop, nop)
 
 class GlotUpdateSnippetCommand(TextCommand):
   def is_enabled(self):
@@ -250,7 +259,7 @@ class GlotUpdateSnippetCommand(TextCommand):
     rawlist = G.list_snippets()
     items = dict([(x['id'], x['title']) for x in rawlist])
     if id not in items:
-      active_window().status_message('snippet id not exists')
+      active_window().status_message('snippet id does not exists')
       return
     @async
     def on_done(title):

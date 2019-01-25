@@ -15,7 +15,6 @@ All messages are displayed at your status bar.
 
 ### Create Snippet
 
-When you have edited a real file (not just in memory),
 <kbd>Ctrl+Shift+P</kbd>, then select `glot: New Snippet`.
 If everything ok, it will ask you for a snippet title.
 
@@ -25,7 +24,7 @@ If everything ok, it will ask you for a snippet title.
 
 ### Update Snippet
 
-**After open a snippet from previous command**, just <kbd>Ctrl+S</kbd> or
+After open a snippet from previous command, just <kbd>Ctrl+S</kbd> or
 <kbd>Ctrl+Shift+P</kbd> then select `glot: Update Snippet`.
 
 ### Delete Snippet
@@ -34,8 +33,8 @@ If everything ok, it will ask you for a snippet title.
 
 ### Run Code
 
-When you have edited a real file (not just in memory),
 <kbd>Ctrl+Shift+P</kbd>, then select `glot: Run` or `glot: Advanced Run`.
+Temporary files should work, but may encounter language specific errors.
 
 ## License
 
