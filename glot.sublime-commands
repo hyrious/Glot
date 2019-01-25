@@ -12,10 +12,22 @@
       "file": "${packages}/glot/README.md"
     }
   },
+  { "caption": "glot: New Snippet",
+    "command": "glot_new_snippet"
+  },
   { "caption": "glot: Open Snippet",
     "command": "glot_open_snippet"
   },
+  { "caption": "glot: Update Snippet",
+    "command": "glot_update_snippet"
+  },
+  { "caption": "glot: Delete Snippet",
+    "command": "glot_delete_snippet"
+  },
   { "caption": "glot: Run",
     "command": "glot_run"
+  },
+  { "caption": "glot: Advanced Run",
+    "command": "glot_advanced_run"
   }
 ]
