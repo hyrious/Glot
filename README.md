@@ -1,7 +1,7 @@
 # [WIP] glot
 
-(sublime plugin) put/run your code on [glot.io](https://glot.io),
-**requires an api token to work**.
+(sublime plugin) Put/run your code on [glot.io](https://glot.io),
+**requires an api token to work**. Get your own token at https://glot.io/account/token and put it in settings.
 
 ![preview](https://user-images.githubusercontent.com/8097890/51736121-3ec09c80-20c4-11e9-8cb9-9a51a2313e9a.gif)
 

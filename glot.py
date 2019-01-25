@@ -4,6 +4,11 @@ import os
 
 __version__ = '0.1.0'
 
+def convert(language):
+  if language == 'c++': return 'cpp'
+  if language == 'cs': return 'csharp'
+  return language
+
 class Constants(object):
   @property
   def cache_path(self):
@@ -117,7 +122,7 @@ class GlotRunCommand(TextCommand):
       content = view.substr(Region(0, view.size()))
     else:
       content = view.substr(region)
-    language = view.scope_name(0).split()[-1].split('.')[-1]
+    language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.languages:
       active_window().status_message('unsupported language')
       return
@@ -145,14 +150,36 @@ class GlotAdvancedRunCommand(TextCommand):
   @async
   def run(self, edit):
     view = self.view
-    language = view.scope_name(0).split()[-1].split('.')[-1]
+    language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.commands:
       active_window().status_message('unsupported language')
       return
     def on_done(stdin):
       command = C.commands[language]
       def on_done(command):
-        self.view.run_command('glot_run')
+        name = os.path.basename(view.file_name() or 'main.txt')
+        region = view.sel()[0]
+        if region.empty():
+          content = view.substr(Region(0, view.size()))
+        else:
+          content = view.substr(region)
+        versions = C.languages[language]
+        @async
+        def execute(language, version, name, content):
+          active_window().status_message('glot running ...')
+          x = G.run_code(language, version, name, content, stdin, command)
+          output = x['stdout'] + x['stderr'] + x['error']
+          output_panel = active_window().create_output_panel('glot')
+          output_panel.run_command('insert_snippet', dict(contents=output))
+          active_window().run_command('show_panel', dict(panel='output.glot'))
+        if len(versions) > 1:
+          @async
+          def on_done(index):
+            if index == -1: return
+            execute(language, versions[index], name, content)
+          active_window().show_quick_panel(versions, on_done)
+        else:
+          execute(language, versions[0], name, content)
       active_window().show_input_panel('Command', command, on_done, nop, nop)
     active_window().show_input_panel('Stdin', '', on_done, nop, nop)
 
@@ -181,7 +208,7 @@ class GlotNewSnippetCommand(TextCommand):
     return C.token is not None
   def run(self, edit):
     view = self.view
-    language = view.scope_name(0).split()[-1].split('.')[-1]
+    language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.languages:
       active_window().status_message('unsupported language')
       return
@@ -211,7 +238,7 @@ class GlotUpdateSnippetCommand(TextCommand):
   def run(self, edit):
     view = self.view
     content = view.substr(Region(0, view.size()))
-    language = view.scope_name(0).split()[-1].split('.')[-1]
+    language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.languages:
       active_window().status_message('unsupported language')
       return
