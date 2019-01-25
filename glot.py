@@ -7,6 +7,7 @@ __version__ = '0.1.0'
 def convert(language):
   if language == 'c++'  : return 'cpp'
   if language == 'cs'   : return 'csharp'
+  if language == 'js'   : return 'javascript'
   if language == 'shell': return 'bash'
   return language
 
