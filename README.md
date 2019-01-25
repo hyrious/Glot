@@ -14,7 +14,7 @@ Press <kbd>Ctrl+Shift+P</kbd>, Select `Package Control: Add Repository`, Input `
 
 ## Key Bindings
 
-I havn't got any idea of using what key bindings, you can add your own by
+I haven't got any ideas of using what key bindings, you can add your own by
 `Preference - Key Bindings` then add things like:
 
 ```json
