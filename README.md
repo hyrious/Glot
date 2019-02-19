@@ -1,6 +1,7 @@
-# glot
+# Glot (sublime plugin)
 
-(sublime plugin) Put/run your code on https://glot.io.
+Put/run your code on https://glot.io.
+
 **Requires an api token to work**.
 Get your own token at https://glot.io/account/token and put it in settings.
 
@@ -8,7 +9,12 @@ Get your own token at https://glot.io/account/token and put it in settings.
 
 ## Install
 
-### from this repo
+### From Package Control
+
+Press <kbd>Ctrl+Shift+P</kbd>, Select `Package Control: Install Package`,
+Search for `Glot`, <kbd>Return</kbd>.
+
+### From this repo
 
 Press <kbd>Ctrl+Shift+P</kbd>, Select `Package Control: Add Repository`, Input `https://github.com/hyrious/glot`, <kbd>Return</kbd>.
 

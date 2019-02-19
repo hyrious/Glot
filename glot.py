@@ -1,4 +1,9 @@
-from sublime import *
+from sublime import (Region,
+                     load_settings,
+                     set_timeout_async,
+                     cache_path,
+                     decode_value,
+                     encode_value)
 from sublime_plugin import TextCommand, EventListener
 import os
 
@@ -126,23 +131,23 @@ class GlotRunCommand(TextCommand):
       content = view.substr(region)
     language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.languages:
-      active_window().status_message('unsupported language')
+      self.view.window().status_message('unsupported language')
       return
     versions = C.languages[language]
     @async
     def execute(language, version, name, content):
-      active_window().status_message('glot running ...')
+      self.view.window().status_message('glot running ...')
       x = G.run_code(language, version, name, content)
       output = x['stdout'] + x['stderr'] + x['error']
-      output_panel = active_window().create_output_panel('glot')
+      output_panel = self.view.window().create_output_panel('glot')
       output_panel.run_command('insert_snippet', dict(contents=output))
-      active_window().run_command('show_panel', dict(panel='output.glot'))
+      self.view.window().run_command('show_panel', dict(panel='output.glot'))
     if len(versions) > 1:
       @async
       def on_done(index):
         if index == -1: return
         execute(language, versions[index], name, content)
-      active_window().show_quick_panel(versions, on_done)
+      self.view.window().show_quick_panel(versions, on_done)
     else:
       execute(language, versions[0], name, content)
 
@@ -154,7 +159,7 @@ class GlotAdvancedRunCommand(TextCommand):
     view = self.view
     language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.commands:
-      active_window().status_message('unsupported language')
+      self.view.window().status_message('unsupported language')
       return
     def on_done(stdin):
       command = C.commands[language]
@@ -168,22 +173,22 @@ class GlotAdvancedRunCommand(TextCommand):
         versions = C.languages[language]
         @async
         def execute(language, version, name, content):
-          active_window().status_message('glot running ...')
+          self.view.window().status_message('glot running ...')
           x = G.run_code(language, version, name, content, stdin, command)
           output = x['stdout'] + x['stderr'] + x['error']
-          output_panel = active_window().create_output_panel('glot')
+          output_panel = self.view.window().create_output_panel('glot')
           output_panel.run_command('insert_snippet', dict(contents=output))
-          active_window().run_command('show_panel', dict(panel='output.glot'))
+          self.view.window().run_command('show_panel', dict(panel='output.glot'))
         if len(versions) > 1:
           @async
           def on_done(index):
             if index == -1: return
             execute(language, versions[index], name, content)
-          active_window().show_quick_panel(versions, on_done)
+          self.view.window().show_quick_panel(versions, on_done)
         else:
           execute(language, versions[0], name, content)
-      active_window().show_input_panel('Command', command, on_done, nop, nop)
-    active_window().show_input_panel('Stdin', '', on_done, nop, nop)
+      self.view.window().show_input_panel('Command', command, on_done, nop, nop)
+    self.view.window().show_input_panel('Stdin', '', on_done, nop, nop)
 
 class GlotOpenSnippetCommand(TextCommand):
   def is_enabled(self):
@@ -202,8 +207,8 @@ class GlotOpenSnippetCommand(TextCommand):
       if not os.path.exists(path):
         with open(path, 'w') as f:
           f.write(x['content'])
-      active_window().open_file(path)
-    active_window().show_quick_panel(items, on_done)
+      self.view.window().open_file(path)
+    self.view.window().show_quick_panel(items, on_done)
 
 class GlotNewSnippetCommand(TextCommand):
   def is_enabled(self):
@@ -212,7 +217,7 @@ class GlotNewSnippetCommand(TextCommand):
     view = self.view
     language = convert(view.scope_name(0).split()[-1].split('.')[-1])
     if language not in C.languages:
-      active_window().status_message('unsupported language')
+      self.view.window().status_message('unsupported language')
       return
     content = view.substr(Region(0, view.size()))
     name = view.name()
@@ -221,25 +226,25 @@ class GlotNewSnippetCommand(TextCommand):
     def on_done(name):
       @async
       def on_done(title):
-        active_window().status_message('sending file ...')
+        self.view.window().status_message('sending file ...')
         x = G.create_snippet(language, title, name, content)
         folder = '{}/{}'.format(C.cache_path, x['id'])
         if not os.path.exists(folder): os.makedirs(folder)
         path = '{}/{}'.format(folder, name)
         with open(path, 'w') as f:
           f.write(content)
-        active_window().status_message('saved glot snippet {}'.format(title))
+        self.view.window().status_message('saved glot snippet {}'.format(title))
         if is_temporary:
           view.run_command("select_all")
           view.run_command("right_delete")
         if is_temporary or not view.is_dirty():
-          active_window().run_command('close_file')
-        active_window().open_file(path)
-      active_window().show_input_panel('Title', 'Untitled', on_done, nop, nop)
+          self.view.window().run_command('close_file')
+        self.view.window().open_file(path)
+      self.view.window().show_input_panel('Title', 'Untitled', on_done, nop, nop)
     if path:
       on_done(os.path.basename(path))
     else:
-      active_window().show_input_panel('FileName', name, on_done, nop, nop)
+      self.view.window().show_input_panel('FileName', name, on_done, nop, nop)
 
 class GlotUpdateSnippetCommand(TextCommand):
   def is_enabled(self):
@@ -249,24 +254,24 @@ class GlotUpdateSnippetCommand(TextCommand):
     view = self.view
     content = view.substr(Region(0, view.size()))
     language = convert(view.scope_name(0).split()[-1].split('.')[-1])
-    if language not in C.languages:
-      active_window().status_message('unsupported language')
-      return
     path = view.file_name()
     if not path: return
     if not path.startswith(C.cache_path): return
     id, name = os.path.split(path[len(C.cache_path) + 1:])
     if not id: return
+    if language not in C.languages:
+      self.view.window().status_message('unsupported language')
+      return
     rawlist = G.list_snippets()
     items = dict([(x['id'], x['title']) for x in rawlist])
     if id not in items:
-      active_window().status_message('snippet id does not exists')
+      self.view.window().status_message('snippet id does not exists')
       return
     @async
     def on_done(title):
       G.update_snippet(id, language, title, name, content)
-      active_window().status_message('saved glot snippet {}'.format(title))
-    active_window().show_input_panel('Title', items[id], on_done, nop, nop)
+      self.view.window().status_message('saved glot snippet {}'.format(title))
+    self.view.window().show_input_panel('Title', items[id], on_done, nop, nop)
 
 class GlotDeleteSnippetCommand(TextCommand):
   def is_enabled(self):
@@ -287,10 +292,10 @@ class GlotDeleteSnippetCommand(TextCommand):
           shutil.rmtree(folder)
         except:
           pass
-      active_window().status_message('deleting snippet ...')
+      self.view.window().status_message('deleting snippet ...')
       G.delete_snippet(id)
-      active_window().status_message('deleted snippet {}'.format(title))
-    active_window().show_quick_panel(items, on_done)
+      self.view.window().status_message('deleted snippet {}'.format(title))
+    self.view.window().show_quick_panel(items, on_done)
 
 class GlotSnippetListener(EventListener):
   def on_post_save_async(self, view):
