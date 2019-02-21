@@ -14,7 +14,26 @@ def convert(language):
   if language == 'cs'   : return 'csharp'
   if language == 'js'   : return 'javascript'
   if language == 'shell': return 'bash'
+  if language == 'ts'   : return 'typescript'
   return language
+
+def default_name(language):
+  if language == 'ats'        : return 'main.dats'
+  if language == 'bash'       : return 'main.sh'
+  if language == 'csharp'     : return 'Main.cs'
+  if language == 'clojure'    : return 'main.clj'
+  if language == 'crystal'    : return 'main.cr'
+  if language == 'erlang'     : return 'main.erl'
+  if language == 'haskell'    : return 'main.hs'
+  if language == 'java'       : return 'Main.java'
+  if language == 'javascript' : return 'main.js'
+  if language == 'ocaml'      : return 'main.ml'
+  if language == 'perl'       : return 'main.pl'
+  if language == 'python'     : return 'main.py'
+  if language == 'ruby'       : return 'main.rb'
+  if language == 'rust'       : return 'main.rs'
+  if language == 'typescript' : return 'main.ts'
+  return 'main.{}'.format(language)
 
 class Constants(object):
   @property
@@ -123,13 +142,13 @@ class GlotRunCommand(TextCommand):
   @async
   def run(self, edit):
     view = self.view
-    name = os.path.basename(view.file_name() or 'main.txt')
     region = view.sel()[0]
     if region.empty():
       content = view.substr(Region(0, view.size()))
     else:
       content = view.substr(region)
     language = convert(view.scope_name(0).split()[-1].split('.')[-1])
+    name = os.path.basename(view.file_name() or default_name(language))
     if language not in C.languages:
       self.view.window().status_message('unsupported language')
       return
@@ -164,7 +183,7 @@ class GlotAdvancedRunCommand(TextCommand):
     def on_done(stdin):
       command = C.commands[language]
       def on_done(command):
-        name = os.path.basename(view.file_name() or 'main.txt')
+        name = os.path.basename(view.file_name() or default_name(language))
         region = view.sel()[0]
         if region.empty():
           content = view.substr(Region(0, view.size()))
