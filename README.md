@@ -16,7 +16,9 @@ Search for `Glot`, <kbd>Return</kbd>.
 
 ### From this repo
 
-Press <kbd>Ctrl+Shift+P</kbd>, Select `Package Control: Add Repository`, Input `https://github.com/hyrious/glot`, <kbd>Return</kbd>.
+Press <kbd>Ctrl+Shift+P</kbd>, Select `Package Control: Add Repository`, Input `https://github.com/hyrious/Glot`, <kbd>Return</kbd>.
+
+Or, in your plugins folder, run `git clone https://github.com/hyrious/Glot`. This way you will not get auto-upgrade provided by Package Control.
 
 ## Key Bindings
 
