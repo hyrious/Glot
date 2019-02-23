@@ -38,25 +38,25 @@ All messages are displayed at your status bar.
 
 ### Create Snippet
 
-<kbd>Ctrl+Shift+P</kbd>, then select `glot: New Snippet`.
+<kbd>Ctrl+Shift+P</kbd>, then select `Glot: New Snippet`.
 If everything ok, it will ask you for a snippet title.
 
 ### Open Snippet
 
-<kbd>Ctrl+Shift+P</kbd>, then select `glot: Open Snippet`.
+<kbd>Ctrl+Shift+P</kbd>, then select `Glot: Open Snippet`.
 
 ### Update Snippet
 
 After open a snippet from previous command, just <kbd>Ctrl+S</kbd> or
-<kbd>Ctrl+Shift+P</kbd> then select `glot: Update Snippet`.
+<kbd>Ctrl+Shift+P</kbd> then select `Glot: Update Snippet`.
 
 ### Delete Snippet
 
-<kbd>Ctrl+Shift+P</kbd>, then select `glot: Delete Snippet`.
+<kbd>Ctrl+Shift+P</kbd>, then select `Glot: Delete Snippet`.
 
 ### Run Code
 
-<kbd>Ctrl+Shift+P</kbd>, then select `glot: Run` or `glot: Advanced Run`.
+<kbd>Ctrl+Shift+P</kbd>, then select `Glot: Run` or `Glot: Advanced Run`.
 Temporary files should work, but may encounter language specific errors.
 e.g. Java requires file name must be the same as class name.
 

@@ -1,33 +1,33 @@
 [
-  { "caption": "Preferences: glot",
+  { "caption": "Preferences: Glot",
     "command": "edit_settings",
     "args": {
       "base_file": "${packages}/Glot/glot.sublime-settings",
       "default": "{\n\t$0\n}\n"
     }
   },
-  { "caption": "glot: Open Readme",
+  { "caption": "Glot: Open Readme",
     "command": "open_file",
     "args": {
       "file": "${packages}/Glot/README.md"
     }
   },
-  { "caption": "glot: New Snippet",
+  { "caption": "Glot: New Snippet",
     "command": "glot_new_snippet"
   },
-  { "caption": "glot: Open Snippet",
+  { "caption": "Glot: Open Snippet",
     "command": "glot_open_snippet"
   },
-  { "caption": "glot: Update Snippet",
+  { "caption": "Glot: Update Snippet",
     "command": "glot_update_snippet"
   },
-  { "caption": "glot: Delete Snippet",
+  { "caption": "Glot: Delete Snippet",
     "command": "glot_delete_snippet"
   },
-  { "caption": "glot: Run",
+  { "caption": "Glot: Run",
     "command": "glot_run"
   },
-  { "caption": "glot: Advanced Run",
+  { "caption": "Glot: Advanced Run",
     "command": "glot_advanced_run"
   }
 ]
